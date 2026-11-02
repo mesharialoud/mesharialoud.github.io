@@ -14,7 +14,7 @@ Cost: Cloudflare Workers + D1 free tier, Resend free tier (3,000 emails/month). 
 ## 2. Create the API (Cloudflare dashboard)
 1. cloudflare.com → sign up / log in → **Workers & Pages → Create → Worker**. Name: `mesharialoud-booking` → Deploy → **Edit code**.
 2. Delete the sample code, paste all of `worker.js`, **Deploy**.
-3. **Storage & databases → D1 → Create database** `mesharialoud-bookings` → open it → **Console** → paste `schema.sql` → Run.
+3. ✅ Database `mesharialoud-bookings` already created with its tables (id 3fcb838b-4efb-42ce-bb45-2cdcc00bf040).
 4. Back in the Worker → **Settings → Bindings → Add → D1 database**: variable name `DB`, pick `mesharialoud-bookings`.
 5. Worker → **Settings → Variables and Secrets**:
    - Text variables: `OWNER_EMAIL` = its@mesharialoud.com · `FROM_EMAIL` = `Meshari Aloud <bookings@mesharialoud.com>` · `ALLOWED_ORIGINS` = `https://www.mesharialoud.com,https://mesharialoud.com`

@@ -10,7 +10,7 @@ ALLOWED_ORIGINS = "https://www.mesharialoud.com,https://mesharialoud.com"
 [[d1_databases]]
 binding = "DB"
 database_name = "mesharialoud-bookings"
-database_id = "REPLACE_WITH_ID_FROM_wrangler_d1_create"
+database_id = "3fcb838b-4efb-42ce-bb45-2cdcc00bf040"
 
 # Secrets (never put these in this file):
 #   wrangler secret put RESEND_API_KEY
