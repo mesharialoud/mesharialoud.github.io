@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Site editor · mesharialoud.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#131313;--panel:#1b1b1b;--panel2:#222;--line:#2d2d2d;--ink:#f2efe8;--mute:#9a958b;--accent:#c9a96a;--ok:#6fcf97;--bad:#eb6a6a;--chg:#e8c26a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:400 14px/1.5 Inter,system-ui,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--line);background:var(--panel);flex:none}
+.mk{width:32px;height:32px;border:1px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font:500 15px Georgia,serif}
+.ttl b{display:block;font-weight:600;line-height:1.1}.ttl span{color:var(--mute);font-size:12px}
+.sp{flex:1}
+.chip{padding:4px 12px;border-radius:999px;border:1px solid var(--line);color:var(--mute);font-size:13px}
+.chip.on{color:var(--chg);border-color:var(--chg)}
+.btn{padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:transparent;transition:.15s}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#161616;border-color:var(--accent);font-weight:600}
+.btn.primary:hover{background:#dcc185;color:#161616}
+.btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.status{padding:6px 18px;font-size:13px;color:var(--mute);border-bottom:1px solid var(--line);flex:none;min-height:30px}
+.status.err{color:var(--bad)}.status.ok{color:var(--ok)}
+.mtabs{display:none}
+.grid{flex:1;min-height:0;display:grid;grid-template-columns:190px minmax(0,1fr) minmax(380px,46%)}
+aside{border-right:1px solid var(--line);padding:14px 10px;overflow:auto;background:var(--panel)}
+aside input{width:100%;padding:8px 10px;margin-bottom:12px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--ink);font:inherit}
+aside a{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:8px;color:var(--mute);text-decoration:none;cursor:pointer}
+aside a:hover{background:var(--panel2);color:var(--ink)}
+aside a i{font-style:normal;font-size:12px;color:var(--chg)}
+#editor{overflow:auto;padding:22px 26px 80px}
+.grp{margin-bottom:34px}
+.grp>h2{font:600 12px Inter;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;position:sticky;top:-22px;background:var(--bg);padding:10px 0;z-index:2}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.item.hide{display:none}
+.lbl{display:flex;gap:8px;align-items:center;margin-bottom:10px;font-size:12px;color:var(--mute)}
+.lbl b{color:var(--ink);font-weight:600}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cols.one{grid-template-columns:1fr}
+.fld{position:relative}
+.fld small{display:flex;justify-content:space-between;color:var(--mute);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.fld small button{background:none;border:0;color:var(--chg);font-size:12px;text-transform:none;letter-spacing:0;display:none}
+.fld.changed small button{display:inline}
+textarea{width:100%;resize:none;overflow:hidden;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 11px;font:inherit;line-height:1.55;transition:border-color .15s}
+textarea:focus{outline:none;border-color:var(--accent)}
+.fld.changed textarea{border-color:var(--chg);background:#1a1810}
+textarea[dir=rtl]{font-family:'IBM Plex Sans Arabic',Inter,sans-serif;line-height:1.8;text-align:right}
+textarea[readonly]{opacity:.55}
+#pv{border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0;background:#0e0e0e}
+.pvbar{display:flex;gap:8px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{background:none;border:0;padding:6px 12px;color:var(--mute)}
+.seg button.on{background:var(--accent);color:#161616;font-weight:600}
+.pvwrap{flex:1;min-height:0;overflow:auto;display:flex;justify-content:center;padding:14px}
+#frame{border:1px solid var(--line);border-radius:10px;background:#fff;width:100%;height:100%;min-height:600px;transition:width .2s}
+#frame.mobile{width:390px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal.open{display:flex}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:16px;width:min(760px,100%);max-height:90vh;display:flex;flex-direction:column}
+.box>h3{padding:18px 22px;border-bottom:1px solid var(--line);font-size:17px}
+.bd{padding:18px 22px;overflow:auto}
+.ft{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;align-items:center}
+.diff{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.diff .w{color:var(--mute);font-size:12px;margin-bottom:6px}
+.diff .o{color:var(--bad);text-decoration:line-through;white-space:pre-wrap}
+.diff .n{color:var(--ok);white-space:pre-wrap}
+.diff .rtl{direction:rtl;text-align:right;font-family:'IBM Plex Sans Arabic',sans-serif}
+.bd label{display:block;color:var(--mute);font-size:12px;margin:14px 0 6px}
+.bd input[type=text],.bd input[type=password]{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--ink);font:inherit}
+.bd ol{margin:10px 0 0 20px;color:#cfcac0}.bd li{margin-bottom:6px}
+.bd a{color:var(--accent)}
+.bd .row{display:flex;align-items:center;gap:8px;margin-top:12px;color:var(--mute)}
+@media (max-width:1100px){
+  .grid{grid-template-columns:1fr}
+  aside{display:none}
+  #pv{border-left:0}
+  .mtabs{display:flex;border-bottom:1px solid var(--line);flex:none}
+  .mtabs button{flex:1;padding:10px;background:none;border:0;color:var(--mute);border-bottom:2px solid transparent}
+  .mtabs button.on{color:var(--accent);border-color:var(--accent)}
+  body.v-edit #pv{display:none} body.v-prev #editor{display:none}
+  .cols{grid-template-columns:1fr}
+  .top .btn{padding:6px 10px}
+}
+</style>
+</head>
+<body class="v-edit">
+
+<header class="top">
+  <div class="mk">M</div>
+  <div class="ttl"><b>Site editor</b><span>mesharialoud.com</span></div>
+  <div class="sp"></div>
+  <span id="chg" class="chip">No changes</span>
+  <button class="btn" id="bReload" title="Reload the latest version from GitHub">Reload</button>
+  <button class="btn" id="bDl">Download</button>
+  <button class="btn" id="bSet">⚙ GitHub token</button>
+  <button class="btn primary" id="bReview" disabled>Review &amp; push</button>
+</header>
+<div id="status" class="status">Loading…</div>
+<div class="mtabs"><button id="tEdit" class="on">Edit text</button><button id="tPrev">Preview</button></div>
+
+<main class="grid">
+  <aside id="side"><input id="q" placeholder="Search text…" type="search"><div id="nav"></div></aside>
+  <section id="editor"></section>
+  <section id="pv">
+    <div class="pvbar">
+      <div class="seg" id="sLang"><button data-v="en" class="on">English</button><button data-v="ar">العربية</button></div>
+      <div class="seg" id="sTheme"><button data-v="dark" class="on">Dark</button><button data-v="light">Light</button></div>
+      <div class="seg" id="sDev"><button data-v="desk" class="on">Desktop</button><button data-v="mobile">Mobile</button></div>
+    </div>
+    <div class="pvwrap"><iframe id="frame" title="Preview"></iframe></div>
+  </section>
+</main>
+
+<!-- Review modal -->
+<div class="modal" id="mReview"><div class="box">
+  <h3>Review changes before pushing</h3>
+  <div class="bd"><div id="diffs"></div>
+    <label for="msg">Commit message</label>
+    <input type="text" id="msg" value="Update site text">
+  </div>
+  <div class="ft"><span id="pushStatus" style="margin-right:auto;font-size:13px"></span>
+    <button class="btn" id="cReview">Keep editing</button>
+    <button class="btn primary" id="bPush">Push to GitHub</button></div>
+</div></div>
+
+<!-- Token modal -->
+<div class="modal" id="mTok"><div class="box">
+  <h3>GitHub token</h3>
+  <div class="bd">
+    <p style="color:#cfcac0">Pushing needs a personal access token limited to this one repository. It is stored only in this browser, never on the site.</p>
+    <ol>
+      <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a></li>
+      <li>Token name: <b>site-editor</b>. Expiration: your choice (e.g. 1 year).</li>
+      <li>Repository access: <b>Only select repositories</b> → <b>mesharialoud.github.io</b></li>
+      <li>Permissions → Repository permissions → <b>Contents: Read and write</b></li>
+      <li>Generate token, copy it and paste it below.</li>
+    </ol>
+    <label for="tok">Token</label>
+    <input type="password" id="tok" placeholder="github_pat_…" autocomplete="off">
+    <div class="row"><input type="checkbox" id="rem" checked><label for="rem" style="margin:0">Remember on this device</label></div>
+    <p id="tokStatus" style="margin-top:12px;font-size:13px"></p>
+  </div>
+  <div class="ft">
+    <button class="btn" id="bForget">Remove token</button>
+    <button class="btn" id="bTest">Test</button>
+    <button class="btn primary" id="bSave">Save</button>
+    <button class="btn" id="cTok">Close</button>
+  </div>
+</div></div>
+
+<script>
+const REPO={owner:'mesharialoud',repo:'mesharialoud.github.io',branch:'main',path:'index.html'};
+const API=`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/contents/${REPO.path}`;
+const $=id=>document.getElementById(id);
+const SECTION_TITLES={nav:'Top bar',hero:'Hero',strip:'Markets strip',about:'About',work:'What I do',brands:'Brands',contact:'Contact',footer:'Footer'};
+
+let SRC='',spans=[],orig=[],vals=[],items=[],locked=new Set(),loaded=false;
+
+/* ---------- helpers ---------- */
+const ta=document.createElement('textarea');
+function decode(raw){ if(/<(?!br\s*\/?>)/i.test(raw)) return null;
+  ta.innerHTML=raw.replace(/<br\s*\/?>/gi,'\n'); return ta.value; }
+function encode(v){return v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\r?\n/g,'<br>');}
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function setStatus(t,c=''){const s=$('status');s.textContent=t;s.className='status '+c;}
+const getToken=()=>{try{return localStorage.getItem('gh_token')||sessionStorage.getItem('gh_token')||''}catch(e){return ''}};
+function b64dec(b){const bin=atob(b.replace(/\s/g,''));const u=Uint8Array.from(bin,c=>c.charCodeAt(0));return new TextDecoder().decode(u);}
+function b64enc(s){const u=new TextEncoder().encode(s);let bin='';for(let i=0;i<u.length;i+=0x8000)bin+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(bin);}
+const norm=s=>s.replace(/\r\n/g,'\n');
+
+/* ---------- parse the page source ---------- */
+function parse(src){
+  spans=[];const re=/<span data-l="(en|ar)">([\s\S]*?)<\/span>/g;let m;
+  while((m=re.exec(src))){const tagStart=m.index,start=tagStart+18;
+    spans.push({lang:m[1],tagStart,start,end:start+m[2].length,raw:m[2]});}
+  const doc=new DOMParser().parseFromString(src,'text/html');
+  const els=[...doc.querySelectorAll('[data-l]')];
+  const domOk=els.length===spans.length;
+  orig=[];vals=[];locked=new Set();
+  spans.forEach((s,i)=>{const d=decode(s.raw);
+    if(d===null){locked.add(i);orig.push(s.raw);vals.push(s.raw);}else{orig.push(d);vals.push(d);}});
+  // pair en+ar
+  items=[];const counters={};
+  for(let i=0;i<spans.length;i++){
+    const a=spans[i],b=spans[i+1];let it={en:null,ar:null};
+    if(a.lang==='en'&&b&&b.lang==='ar'&&src.slice(a.end+7,b.tagStart).trim()===''){it.en=i;it.ar=i+1;i++;}
+    else it[a.lang]=i;
+    const ref=domOk?els[it.en??it.ar]:null;it.sec='other';it.base='Text';it.ctx='';
+    if(ref){const hs=ref.closest('header,section,footer');
+      it.sec=!hs?'other':hs.tagName==='HEADER'?'nav':hs.tagName==='FOOTER'?'footer':(hs.id||[...hs.classList][0]||'other');
+      it.base=labelOf(ref);
+      const art=ref.closest('article');const h=art&&art.querySelector('h3');
+      if(h){const e=h.querySelector('[data-l=en]')||h;it.ctx=e.textContent.trim().replace(/\s+/g,' ').slice(0,28);}
+    }
+    const key=it.sec+'|'+it.ctx+'|'+it.base;counters[key]=(counters[key]||0)+1;it.n=counters[key];it.key=key;
+    items.push(it);
+  }
+  items.forEach(it=>{if(counters[it.key]>1)it.base+=' '+it.n;});
+}
+function labelOf(el){const p=el.parentElement,tag=p.tagName.toLowerCase(),c=p.className||'';
+  if(tag==='h1')return'Name';
+  if(tag==='h2')return c.includes('sec-title')?'Section title':'Heading';
+  if(tag==='h3')return'Card title';
+  if(tag==='p'){for(const [k,v] of [['role','Role'],['lead','Intro'],['big','Big statement'],['eyebrow','Eyebrow'],['where','Location line'],['tagline','Tagline'],['strip-label','Label']])if(c.includes(k))return v;return'Paragraph';}
+  if(tag==='a')return c.includes('btn')?'Button':c.includes('more')?'Link text':'Link';
+  if(tag==='button')return'Button';if(tag==='figcaption')return'Caption';if(tag==='li')return'Item';return'Text';}
+
+/* ---------- build output ---------- */
+function build(preview){
+  let out='',pos=0;
+  spans.forEach((s,i)=>{
+    out+=SRC.slice(pos,s.tagStart);
+    out+=preview?`<span data-l="${s.lang}" data-ei="${i}">`:SRC.slice(s.tagStart,s.start);
+    out+=(vals[i]!==orig[i])?(locked.has(i)?vals[i]:encode(vals[i])):s.raw;
+    out+='</span>';pos=s.end+7;});
+  return out+SRC.slice(pos);
+}
+const changedIdx=()=>spans.map((_,i)=>i).filter(i=>vals[i]!==orig[i]);
+
+/* ---------- render editor ---------- */
+function render(){
+  const ed=$('editor'),nav=$('nav');ed.innerHTML='';nav.innerHTML='';
+  const order=[];items.forEach(it=>{if(!order.includes(it.sec))order.push(it.sec);});
+  order.forEach(sec=>{
+    const g=document.createElement('div');g.className='grp';g.id='g-'+sec;
+    g.innerHTML=`<h2>${SECTION_TITLES[sec]||sec}</h2>`;
+    items.filter(it=>it.sec===sec).forEach(it=>{
+      const d=document.createElement('div');d.className='item';
+      d.innerHTML=`<div class="lbl">${it.ctx?`<b>${esc(it.ctx)}</b> ›`:''} <span>${esc(it.base)}</span></div><div class="cols ${(it.en!==null&&it.ar!==null)?'':'one'}"></div>`;
+      const cols=d.querySelector('.cols');
+      [['en',it.en],['ar',it.ar]].forEach(([lang,idx])=>{
+        if(idx===null)return;
+        const f=document.createElement('div');f.className='fld';f.dataset.i=idx;
+        f.innerHTML=`<small><span>${lang==='en'?'English':'العربية'}</span><button type="button">↺ undo</button></small>`;
+        const t=document.createElement('textarea');t.value=vals[idx];t.dir=lang==='ar'?'rtl':'ltr';t.lang=lang;
+        if(locked.has(idx))t.readOnly=true;
+        f.appendChild(t);cols.appendChild(f);
+        const fit=()=>{t.style.height='auto';t.style.height=(t.scrollHeight+2)+'px';};
+        t._fit=fit;
+        t.addEventListener('input',()=>{vals[idx]=t.value;fit();touch(idx,f);});
+        t.addEventListener('focus',()=>{focusPreview(idx,lang);});
+        f.querySelector('button').onclick=()=>{vals[idx]=orig[idx];t.value=orig[idx];fit();touch(idx,f);};
+        d._text=(vals[idx]+' ');d.dataset.s=((d.dataset.s||'')+' '+orig[idx]).toLowerCase();
+      });
+      d.dataset.s+=' '+(it.ctx+' '+it.base).toLowerCase();
+      g.appendChild(d);
+    });
+    ed.appendChild(g);
+    const a=document.createElement('a');a.dataset.sec=sec;a.innerHTML=`<span>${SECTION_TITLES[sec]||sec}</span><i></i>`;
+    a.onclick=()=>{g.scrollIntoView({behavior:'smooth',block:'start'});};nav.appendChild(a);
+  });
+  requestAnimationFrame(()=>ed.querySelectorAll('textarea').forEach(t=>t._fit&&t._fit()));
+  refreshChanges();
+}
+function touch(idx,f){
+  f.classList.toggle('changed',vals[idx]!==orig[idx]);
+  const el=pvDoc()&&pvDoc().querySelector(`[data-ei="${idx}"]`);
+  if(el)el.innerHTML=encode(vals[idx]);
+  refreshChanges();
+}
+function refreshChanges(){
+  const n=changedIdx().length;
+  $('chg').textContent=n?`${n} change${n>1?'s':''}`:'No changes';
+  $('chg').classList.toggle('on',n>0);
+  $('bReview').disabled=!n||!loaded;
+  document.querySelectorAll('#editor .fld').forEach(f=>f.classList.toggle('changed',vals[f.dataset.i]!==orig[f.dataset.i]));
+  const per={};changedIdx().forEach(i=>{const it=items.find(x=>x.en===i||x.ar===i);if(it)per[it.sec]=(per[it.sec]||0)+1;});
+  document.querySelectorAll('#nav a').forEach(a=>{a.querySelector('i').textContent=per[a.dataset.sec]?('● '+per[a.dataset.sec]):'';});
+}
+$('q').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('#editor .item').forEach(d=>{
+    const txt=d.dataset.s+' '+[...d.querySelectorAll('textarea')].map(t=>t.value.toLowerCase()).join(' ');
+    d.classList.toggle('hide',!!q&&!txt.includes(q));});});
+
+/* ---------- preview ---------- */
+const frame=$('frame');let pvState={lang:'en',theme:'dark'};
+const pvDoc=()=>{try{return frame.contentDocument}catch(e){return null}};
+function loadPreview(){
+  const base=new URL('../',location.href).href;
+  frame.srcdoc=build(true).replace('<head>',`<head><base href="${base}">`);
+}
+frame.addEventListener('load',()=>{const d=pvDoc();if(!d)return;
+  const st=d.createElement('style');
+  st.textContent='.reveal{opacity:1!important;transform:none!important}[data-ei].ed-hl{outline:2px solid #c9a96a;outline-offset:4px;border-radius:4px;background:rgba(201,169,106,.15)}';
+  d.head.appendChild(st);
+  d.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();
+    const h=a.getAttribute('href');if(h&&h[0]==='#'){const t=d.querySelector(h);t&&t.scrollIntoView({behavior:'smooth'});}});
+  applyPv();});
+function applyPv(){const d=pvDoc();if(!d)return;const r=d.documentElement;
+  r.lang=pvState.lang;r.dir=pvState.lang==='ar'?'rtl':'ltr';r.dataset.theme=pvState.theme;
+  const m=d.querySelector('meta[name=theme-color]');if(m)m.content=pvState.theme==='light'?'#faf7f1':'#161616';
+  document.querySelectorAll('#sLang button').forEach(b=>b.classList.toggle('on',b.dataset.v===pvState.lang));
+  document.querySelectorAll('#sTheme button').forEach(b=>b.classList.toggle('on',b.dataset.v===pvState.theme));}
+function focusPreview(idx,lang){
+  if(pvState.lang!==lang){pvState.lang=lang;applyPv();}
+  const d=pvDoc();if(!d)return;
+  d.querySelectorAll('.ed-hl').forEach(e=>e.classList.remove('ed-hl'));
+  const el=d.querySelector(`[data-ei="${idx}"]`);
+  if(el){el.classList.add('ed-hl');el.scrollIntoView({block:'center',behavior:'smooth'});}
+}
+$('sLang').onclick=e=>{const v=e.target.dataset.v;if(v){pvState.lang=v;applyPv();}};
+$('sTheme').onclick=e=>{const v=e.target.dataset.v;if(v){pvState.theme=v;applyPv();}};
+$('sDev').onclick=e=>{const v=e.target.dataset.v;if(!v)return;frame.classList.toggle('mobile',v==='mobile');
+  document.querySelectorAll('#sDev button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));};
+$('tEdit').onclick=()=>{document.body.className='v-edit';$('tEdit').classList.add('on');$('tPrev').classList.remove('on');};
+$('tPrev').onclick=()=>{document.body.className='v-prev';$('tPrev').classList.add('on');$('tEdit').classList.remove('on');};
+
+/* ---------- load ---------- */
+async function load(){
+  loaded=false;$('bReview').disabled=true;setStatus('Loading the latest version…');
+  try{
+    let text;const tok=getToken();
+    if(tok){const r=await fetch(API+'?ref='+REPO.branch,{headers:{Authorization:'Bearer '+tok,Accept:'application/vnd.github.raw+json'},cache:'no-store'});
+      if(!r.ok)throw new Error('GitHub '+r.status);text=await r.text();}
+    else{const r=await fetch('../index.html?'+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('Site '+r.status);text=await r.text();}
+    SRC=norm(text);parse(SRC);render();loadPreview();loaded=true;refreshChanges();
+    setStatus(`Loaded ${items.length} editable text blocks (${spans.length} English/Arabic lines). Edit on the left, check the preview on the right.`,'ok');
+  }catch(e){
+    const tok=getToken();
+    setStatus('Could not load the page: '+e.message+(tok?' — try Settings → Test, or remove the token to load from the public site.':''),'err');}
+}
+$('bReload').onclick=()=>{if(changedIdx().length&&!confirm('Discard your unsaved edits and reload?'))return;load();};
+
+/* ---------- download ---------- */
+$('bDl').onclick=()=>{const b=new Blob([build(false)],{type:'text/html'});const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='index.html';a.click();URL.revokeObjectURL(a.href);};
+
+/* ---------- review & push ---------- */
+function openModal(id){$(id).classList.add('open');}function closeModal(id){$(id).classList.remove('open');}
+$('bReview').onclick=()=>{
+  const box=$('diffs');box.innerHTML='';
+  changedIdx().forEach(i=>{const it=items.find(x=>x.en===i||x.ar===i)||{};const lang=spans[i].lang;
+    const d=document.createElement('div');d.className='diff';
+    d.innerHTML=`<div class="w">${SECTION_TITLES[it.sec]||''} › ${it.ctx?esc(it.ctx)+' › ':''}${esc(it.base||'')} · ${lang==='en'?'English':'العربية'}</div>
+      <div class="o ${lang==='ar'?'rtl':''}">${esc(orig[i])}</div><div class="n ${lang==='ar'?'rtl':''}">${esc(vals[i])}</div>`;
+    box.appendChild(d);});
+  $('pushStatus').textContent='';$('pushStatus').style.color='';
+  openModal('mReview');};
+$('cReview').onclick=()=>closeModal('mReview');
+$('bPush').onclick=async()=>{
+  const tok=getToken();if(!tok){closeModal('mReview');openModal('mTok');return;}
+  const ps=$('pushStatus');const say=(t,c)=>{ps.textContent=t;ps.style.color=c||'';};
+  $('bPush').disabled=true;say('Checking the latest version on GitHub…');
+  try{
+    const H={Authorization:'Bearer '+tok,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};
+    const g=await fetch(API+'?ref='+REPO.branch,{headers:H,cache:'no-store'});
+    if(g.status===401||g.status===403||g.status===404)throw new Error('GitHub refused the token ('+g.status+'). Check the token has Contents: Read and write on this repository.');
+    if(!g.ok)throw new Error('GitHub '+g.status);
+    const j=await g.json();
+    if(norm(b64dec(j.content))!==SRC)throw new Error('The site changed on GitHub since you opened this editor. Click “Reload” (your edits will be discarded) and apply them again, so nothing is overwritten.');
+    say('Pushing…');
+    const out=build(false);
+    const p=await fetch(API,{method:'PUT',headers:{...H,'Content-Type':'application/json'},
+      body:JSON.stringify({message:$('msg').value.trim()||'Update site text',content:b64enc(out),sha:j.sha,branch:REPO.branch})});
+    if(!p.ok){let m='';try{m=(await p.json()).message}catch(_){}throw new Error('Push failed ('+p.status+') '+m);}
+    const r=await p.json();
+    SRC=norm(out);orig=vals.slice();refreshChanges();
+    say('Pushed ✓ Live on the site in about a minute.','#6fcf97');
+    setStatus('Pushed to GitHub. The site updates in about a minute (hard refresh to see it).','ok');
+    if(r.commit&&r.commit.html_url){const a=document.createElement('a');a.href=r.commit.html_url;a.target='_blank';a.rel='noopener';a.textContent=' View commit';a.style.color='#c9a96a';ps.appendChild(a);}
+  }catch(e){say(e.message,'#eb6a6a');}
+  $('bPush').disabled=false;
+};
+
+/* ---------- token ---------- */
+$('bSet').onclick=()=>{$('tok').value=getToken();$('tokStatus').textContent='';openModal('mTok');};
+$('cTok').onclick=()=>closeModal('mTok');
+$('bSave').onclick=()=>{const v=$('tok').value.trim();
+  try{localStorage.removeItem('gh_token');sessionStorage.removeItem('gh_token');
+    if(v)($('rem').checked?localStorage:sessionStorage).setItem('gh_token',v);}catch(e){}
+  $('tokStatus').textContent=v?($('rem').checked?'Saved on this device.':'Saved for this tab only.'):'No token saved.';
+  $('tokStatus').style.color=v?'#6fcf97':'';
+  if(v)load();};
+$('bForget').onclick=()=>{try{localStorage.removeItem('gh_token');sessionStorage.removeItem('gh_token')}catch(e){}
+  $('tok').value='';$('tokStatus').textContent='Token removed.';$('tokStatus').style.color='';};
+$('bTest').onclick=async()=>{const v=$('tok').value.trim()||getToken();if(!v){$('tokStatus').textContent='Paste a token first.';return;}
+  $('tokStatus').textContent='Testing…';$('tokStatus').style.color='';
+  try{const r=await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}`,{headers:{Authorization:'Bearer '+v,Accept:'application/vnd.github+json'}});
+    const j=await r.json();
+    if(!r.ok)throw new Error(j.message||r.status);
+    const can=j.permissions&&j.permissions.push;
+    $('tokStatus').textContent=can?'Token works and can push to '+j.full_name+' ✓':'Token can read '+j.full_name+' but cannot write. Set Contents → Read and write.';
+    $('tokStatus').style.color=can?'#6fcf97':'#eb6a6a';
+  }catch(e){$('tokStatus').textContent='Token failed: '+e.message;$('tokStatus').style.color='#eb6a6a';}};
+
+window.addEventListener('beforeunload',e=>{if(changedIdx().length){e.preventDefault();e.returnValue='';}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));});
+load();
+</script>
+</body>
+</html>
