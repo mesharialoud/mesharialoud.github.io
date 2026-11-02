@@ -147,3 +147,10 @@ html[lang=ar] .brand-card h3{font-family:'IBM Plex Sans Arabic','Inter',sans-ser
   .cards,.brand-grid{grid-template-columns:1fr}
   .brand-card{flex-direction:column;align-items:flex-start}
 }
+
+.brand-card.wide{grid-column:1/-1}
+.logo-teal{background:#cfe8ea;border-color:#b9dcdf}
+.tagline{color:var(--soft2);font-size:16px;margin-bottom:18px;max-width:34em}
+.brand-card.wide .brand-links{max-width:46em}
+.num-ltr{color:var(--mute);font-weight:400;padding-inline-start:8px;border-inline-start:1px solid var(--line)}
+.brand-links a:hover .num-ltr{color:inherit}
