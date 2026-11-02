@@ -10,7 +10,7 @@ const LINKS = [
   { icon: "linkedin", en: "LinkedIn", ar: "لينكدإن", href: "https://www.linkedin.com/in/mesharialoud/" },
   { icon: "phone",    en: "Call",     ar: "اتصال",   href: "tel:+96555665505", sub: "+965 5566 5505" },
   { icon: "whatsapp", en: "WhatsApp", ar: "واتساب",  href: "https://wa.me/96555665505", sub: "+965 5566 5505" },
-  { icon: "mail",     en: "Email",    ar: "البريد الإلكتروني", href: "" }, // e.g. "mailto:you@example.com"
+  { icon: "mail",     en: "Email",    ar: "البريد الإلكتروني", href: "mailto:its@mesharialoud.com", sub: "its@mesharialoud.com" },
 ];
 // --------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ LINKS.filter(l => l.href).forEach(l => {
 document.getElementById("year").textContent = new Date().getFullYear();
 
 // gentle reveal on scroll
-const targets = document.querySelectorAll(".hero-text,.portrait,.about-grid,.card,.contact>*");
+const targets = document.querySelectorAll(".hero-text,.portrait,.about-grid,.card,.brand-card,.contact>*");
 targets.forEach(t => t.classList.add("reveal"));
 const io = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
