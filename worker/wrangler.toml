@@ -1,0 +1,18 @@
+name = "mesharialoud-booking"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+OWNER_EMAIL = "its@mesharialoud.com"
+FROM_EMAIL = "Meshari Aloud <bookings@mesharialoud.com>"
+ALLOWED_ORIGINS = "https://www.mesharialoud.com,https://mesharialoud.com"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mesharialoud-bookings"
+database_id = "REPLACE_WITH_ID_FROM_wrangler_d1_create"
+
+# Secrets (never put these in this file):
+#   wrangler secret put RESEND_API_KEY
+#   wrangler secret put SIGNING_SECRET        (any long random string)
+#   wrangler secret put TURNSTILE_SECRET      (optional, bot protection)

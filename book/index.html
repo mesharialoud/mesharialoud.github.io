@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Have a Cup of Coffee — Book a conversation with Meshari Aloud</title>
+<meta name="description" content="Book a 30-minute one-to-one conversation with Meshari Aloud about restaurant tech, GCC distribution or your next idea. Reservation fee 10 KD.">
+<meta name="theme-color" content="#161616">
+<meta name="color-scheme" content="dark light">
+<link rel="canonical" href="https://www.mesharialoud.com/book/">
+<meta property="og:title" content="Have a Cup of Coffee — Meshari Aloud">
+<meta property="og:description" content="A 30-minute one-to-one conversation. Reservation fee 10 KD.">
+<meta property="og:image" content="https://www.mesharialoud.com/assets/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}
+if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";
+document.documentElement.dataset.theme=t;})();
+</script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="book.css">
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="../" aria-label="Meshari Aloud">
+    <span class="mark">M</span>
+    <span class="brand-name"><span data-l="en">Meshari Aloud</span><span data-l="ar">مشاري العود</span></span>
+  </a>
+  <nav>
+    <a href="../"><span data-l="en">Home</span><span data-l="ar">الرئيسية</span></a>
+    <button id="theme" class="icon-btn" type="button" aria-label="Toggle light / dark theme">
+      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+    <button id="lang" class="lang" type="button" aria-label="Switch language"><span data-l="en">العربية</span><span data-l="ar">English</span></button>
+  </nav>
+</header>
+
+<main class="bk">
+  <div class="bk-hero">
+    <p class="eyebrow"><span data-l="en">One-to-one · 30 minutes</span><span data-l="ar">لقاء فردي · ٣٠ دقيقة</span></p>
+    <h1><span data-l="en">Have a Cup<br>of Coffee</span><span data-l="ar">فنجان<br>قهوة</span></h1>
+    <p class="lead">
+      <span data-l="en">A focused conversation with me about restaurant technology, GCC distribution, or an idea you want to build. Pick a time that suits you and I will confirm by email.</span>
+      <span data-l="ar">حديث مركّز معي حول تقنية المطاعم أو التوزيع في الخليج أو فكرة تريد تنفيذها. اختر الوقت المناسب وسأؤكد الموعد عبر البريد الإلكتروني.</span>
+    </p>
+    <p class="fee"><b>10 <span data-l="en">KD</span><span data-l="ar">د.ك</span></b>
+      <span data-l="en">reservation fee · non-refundable</span><span data-l="ar">رسوم الحجز · غير قابلة للاسترداد</span></p>
+  </div>
+
+  <div class="bk-card" id="panel" aria-live="polite">
+    <div id="loading" class="note"><span data-l="en">Loading available times…</span><span data-l="ar">جارٍ تحميل المواعيد المتاحة…</span></div>
+
+    <div id="closed" class="note" hidden>
+      <p><b><span data-l="en">Online booking opens soon.</span><span data-l="ar">الحجز الإلكتروني سيُفتح قريباً.</span></b></p>
+      <p><span data-l="en">In the meantime, message me and we'll arrange a time.</span><span data-l="ar">في الأثناء، راسلني لنتفق على موعد.</span></p>
+      <div class="row"><a class="btn primary" id="cWa" target="_blank" rel="noopener">WhatsApp</a><a class="btn ghost" id="cMail"><span data-l="en">Email</span><span data-l="ar">البريد</span></a></div>
+    </div>
+
+    <form id="form" hidden novalidate>
+      <h2 class="step"><i>1</i><span data-l="en">Choose a day</span><span data-l="ar">اختر اليوم</span></h2>
+      <div id="days" class="chips" role="listbox"></div>
+
+      <h2 class="step"><i>2</i><span data-l="en">Choose a time <small>(Kuwait time)</small></span><span data-l="ar">اختر الوقت <small>(بتوقيت الكويت)</small></span></h2>
+      <div id="times" class="chips times"><p class="muted"><span data-l="en">Select a day first.</span><span data-l="ar">اختر اليوم أولاً.</span></p></div>
+
+      <h2 class="step"><i>3</i><span data-l="en">Your details</span><span data-l="ar">بياناتك</span></h2>
+      <div class="grid2">
+        <label><span data-l="en">Full name</span><span data-l="ar">الاسم الكامل</span><input id="fName" autocomplete="name" maxlength="80" required></label>
+        <label><span data-l="en">Phone / WhatsApp</span><span data-l="ar">الجوال / واتساب</span><input id="fPhone" type="tel" dir="ltr" inputmode="tel" autocomplete="tel" placeholder="+965 …" maxlength="20" required></label>
+      </div>
+      <label><span data-l="en">Email</span><span data-l="ar">البريد الإلكتروني</span><input id="fEmail" type="email" dir="ltr" autocomplete="email" maxlength="254" required></label>
+      <label><span data-l="en">What would you like to talk about? <small>(optional)</small></span><span data-l="ar">ما الذي تود مناقشته؟ <small>(اختياري)</small></span><textarea id="fNote" rows="3" maxlength="600"></textarea></label>
+      <input id="fHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div id="ts"></div>
+
+      <label class="check"><input type="checkbox" id="fAgree">
+        <span><span data-l="en">I understand the 10 KD reservation fee is non-refundable. I'll receive the payment details once my time is confirmed.</span><span data-l="ar">أفهم أن رسوم الحجز ١٠ د.ك غير قابلة للاسترداد، وسأستلم تفاصيل الدفع بعد تأكيد الموعد.</span></span></label>
+
+      <p id="summary" class="summary" hidden></p>
+      <p id="error" class="error" role="alert" hidden></p>
+      <button class="btn primary big" id="submit" type="submit" disabled><span data-l="en">Request this time</span><span data-l="ar">اطلب هذا الموعد</span></button>
+    </form>
+
+    <div id="done" class="note done" hidden>
+      <h2><span data-l="en">Request sent ☕</span><span data-l="ar">تم إرسال الطلب ☕</span></h2>
+      <p id="doneWhen"></p>
+      <p><span data-l="en">I'll confirm by email shortly. Please check your spam folder if you don't see it.</span><span data-l="ar">سأؤكد الموعد عبر البريد الإلكتروني قريباً. تحقق من مجلد الرسائل غير المرغوبة إن لم تجدها.</span></p>
+      <a class="btn ghost" href="../"><span data-l="en">Back to home</span><span data-l="ar">العودة للرئيسية</span></a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>© <span id="year">2026</span> Meshari Aloud</span>
+  <span><span data-l="en">Kuwait</span><span data-l="ar">الكويت</span></span>
+</footer>
+
+<script src="config.js"></script>
+<script src="book.js"></script>
+</body>
+</html>
